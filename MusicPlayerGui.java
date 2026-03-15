@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.io.File;
 import java.util.Stack;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -15,8 +16,8 @@ public class MusicPlayerGui extends JFrame implements ActionListener {
   BufferedImage image = null;
 
   // Colors
-  public static final Color BG_Color = Color.BLACK;
-  public static final Color FG_Color = Color.WHITE;
+  public static final Color BG_Color = Color.black;
+  public static final Color FG_Color = Color.white;
 
   // Song
   JLabel songImage;
@@ -49,8 +50,7 @@ public class MusicPlayerGui extends JFrame implements ActionListener {
   double durationInSeconds;
   long seconds;
   boolean playlist;
-  String currentName;
-  String lastName;
+  ArrayList<String> names = new ArrayList<>();
 
   public MusicPlayerGui() {
     super("Music Player");
@@ -167,12 +167,14 @@ public class MusicPlayerGui extends JFrame implements ActionListener {
           Clip clip = AudioSystem.getClip();
 
           System.out.println(file.getName());
-          currentName = file.getName().substring(0, file.getName().indexOf("."));
-          songTitle.setText(currentName);
+          names.add(file.getName().substring(0, file.getName().indexOf(".")));
+          songTitle.setText(names.get(0));
 
           clip.open(aS);
           clips.push(clip);
           current = clips.size() - 1;
+          clips.peek().start();
+          enablePauseButton();
 
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
           ex.printStackTrace();
@@ -198,13 +200,15 @@ public class MusicPlayerGui extends JFrame implements ActionListener {
 
             Clip clip = AudioSystem.getClip();
             System.out.println(file.getName());
-            currentName = file.getName().substring(0, file.getName().indexOf("."));
-            songTitle.setText(currentName);
+            names.add(file.getName().substring(0, file.getName().indexOf(".")));
+            songTitle.setText(names.get(0));
 
             playlist = true;
             clip.open(aS);
             clips.push(clip);
             current = clips.size() - 1;
+            clips.peek().start();
+            enablePauseButton();
 
           } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             ex.printStackTrace();
@@ -229,6 +233,7 @@ public class MusicPlayerGui extends JFrame implements ActionListener {
           clips.get(current).stop();
           clips.get(current).setMicrosecondPosition(0);
           clips.get(current - 1).start();
+          songTitle.setText(names.get(current - 1));
         }
         current = current - 1;
       }
@@ -240,6 +245,7 @@ public class MusicPlayerGui extends JFrame implements ActionListener {
           clips.get(current).stop();
           clips.get(current).setMicrosecondPosition(0);
           clips.get(current + 1).start();
+          songTitle.setText(names.get(current + 1));
         }
         current = current + 1;
       }
