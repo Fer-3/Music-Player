@@ -3,8 +3,8 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.io.File;
-import java.util.Stack;
 import java.util.ArrayList;
+import java.util.Stack;
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -80,7 +80,7 @@ public class MusicPlayerGui extends JFrame implements ActionListener {
     songTitle.setHorizontalAlignment(SwingConstants.CENTER);
     add(songTitle);
 
-    playbackSlider = new JSlider();
+    playbackSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
     playbackSlider.setBounds(getWidth() / 2 - 300 / 2, 365, 300, 40);
     playbackSlider.setBackground(null);
     add(playbackSlider);
@@ -176,6 +176,7 @@ public class MusicPlayerGui extends JFrame implements ActionListener {
           clips.peek().start();
           enablePauseButton();
 
+          updatePlayBackSlider(clip);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
           ex.printStackTrace();
         }
@@ -210,6 +211,7 @@ public class MusicPlayerGui extends JFrame implements ActionListener {
             clips.peek().start();
             enablePauseButton();
 
+            updatePlayBackSlider(clip);
           } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             ex.printStackTrace();
           }
@@ -275,4 +277,6 @@ public class MusicPlayerGui extends JFrame implements ActionListener {
     pauseBtn.setEnabled(false);
     play = false;
   }
+
+  void updatePlayBackSlider(Clip clip) {}
 }
